@@ -2,12 +2,12 @@
 
 ## Descripción del Proyecto
 
-Este es un proyecto universitario que implementa la parte del **servidor** de una aplicación cliente-servidor. Está desarrollado en Python y es capaz de recibir datasets sobre la deforestación global.
+Proyecto universitario que implementa la parte del **servidor** de una aplicación cliente-servidor. Está desarrollado en Python y es capaz de recibir datasets sobre la deforestación global.
 
 La aplicación utiliza sockets para la comunicación, una base de datos SQLite para la persistencia de datos y una interfaz gráfica de usuario (GUI) construida con Tkinter para la gestión y visualización.
 
 ### Entorno de Operación
-Actualmente, el proyecto está diseñado para operar de forma local, es decir, el cliente y el servidor deben ejecutarse en la misma computadora. A futuro, puede adaptarse para operar en una red real.
+Actualmente, el proyecto está diseñado para operar de forma local, es decir, el cliente y el servidor deben ejecutarse en la misma computadora.
 
 ### Flujo de Trabajo
 
