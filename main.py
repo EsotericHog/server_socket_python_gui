@@ -1,5 +1,3 @@
-import threading
-from config import HOST, PUERTO
 from api.servidor import Servidor
 from gui.interfaz_usuario import InterfazGrafica
 

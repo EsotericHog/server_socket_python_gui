@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext, messagebox
+from tkinter import ttk, messagebox
 from database import gestor_db
 from config import HOST, PUERTO
 
@@ -98,11 +98,69 @@ class InterfazGrafica(tk.Tk):
         self.boton_limpiar.config(state="disabled")
         print("Log: Tabla y datos temporales limpiados.")
 
-    def manejar_datos_recibidos(self, datos):
+    def manejar_datos_recibidos(self, datos_brutos):
         # Limpiar la tabla antes de mostrar nuevos datos
         self.limpiar_tabla()
+
+        if not datos_brutos:
+            messagebox.showwarning("Datos Vacíos", "Se ha recibido una petición sin datos.")
+            return
+        
+        # Nombres de columna que nuestro sistema usa internamente.
+        nombres_internos = {'pais', 'codigo', 'año', 'perdida_de_bosques_en_hectareas'}
+        
+        # Nombres de columna que conocemos del cliente.
+        nombres_cliente_original = {'zona_pais', 'iso3', 'anio', 'perdida_ha'}
+
+        # Tomamos el primer registro para inspeccionar sus claves (nombres de columna).
+        primer_registro = datos_brutos[0]
+        claves_recibidas = set(primer_registro.keys())
+
+        datos_mapeados = []
+
+        # Estrategia 1: ¿Los datos ya vienen en nuestro formato interno?
+        if nombres_internos.issubset(claves_recibidas):
+            print("Log: Detectado formato interno. Procesando directamente.")
+            for registro in datos_brutos:
+                try:
+                    registro['año'] = int(registro['año'])
+                    registro['perdida_de_bosques_en_hectareas'] = float(registro['perdida_de_bosques_en_hectareas'])
+                    datos_mapeados.append(registro)
+                except (ValueError, KeyError) as e:
+                    print(f"Log: Se omitió un registro (formato interno) por error de tipo/clave: {e}")
+
+        # Estrategia 2: ¿Los datos vienen en el formato original del cliente?
+        elif nombres_cliente_original.issubset(claves_recibidas):
+            print("Log: Detectado formato del cliente. Realizando traducción.")
+            for registro in datos_brutos:
+                try:
+                    registro_mapeado = {
+                        'pais': registro['zona_pais'],
+                        'codigo': registro['iso3'],
+                        'año': int(registro['anio']),
+                        'perdida_de_bosques_en_hectareas': float(registro['perdida_ha'])
+                    }
+                    datos_mapeados.append(registro_mapeado)
+                except (ValueError, KeyError) as e:
+                    print(f"Log: Se omitió un registro (formato cliente) por error de tipo/clave: {e}")
+        
+        # Estrategia 3: Formato desconocido.
+        else:
+            messagebox.showerror("Error de Formato", 
+                "El formato de los datos recibidos es desconocido.\n\n"
+                "Formatos aceptados:\n"
+                f"1. {nombres_internos}\n"
+                f"2. {nombres_cliente_original}")
+            return
+
+        # --- Fin de la lógica de mapeo ---
+
+        if not datos_mapeados:
+            messagebox.showerror("Error de Procesamiento", "Se recibieron datos, pero no se pudo procesar ningún registro válido.")
+            return
+
         # Guardar los datos recibidos temporalmente
-        self.datos_recibidos_temporalmente = datos
+        self.datos_recibidos_temporalmente = datos_mapeados
         
         # Poblar la tabla con los registros recibidos
         for registro in self.datos_recibidos_temporalmente:
@@ -116,7 +174,7 @@ class InterfazGrafica(tk.Tk):
             self.tabla_vista.insert('', tk.END, values=valores)
         
         # Informar al usuario y habilitar botones de acción
-        messagebox.showinfo("Datos Recibidos", f"Se han recibido {len(datos)} registros y se muestran en la tabla. \nPresione 'Guardar Datos en BD' para almacenarlos.")
+        messagebox.showinfo("Datos Recibidos", f"Se han recibido {len(datos_mapeados)} registros y se muestran en la tabla. \nPresione 'Guardar Datos en BD' para almacenarlos.")
         self.boton_guardar.config(state="normal")
         self.boton_limpiar.config(state="normal")
 

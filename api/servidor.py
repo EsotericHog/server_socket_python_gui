@@ -6,10 +6,10 @@ from config import TAMANO_BUFFER
 
 def manejar_cliente(conexion_cliente, direccion, callback_log, callback_datos):
     """
-    Manejar la conexión de un cliente:
-    - Recibir bytes hasta que la conexión se cierre.
-    - Decodificar los bytes a JSON y llamar al callback de datos.
-    - Enviar confirmación al cliente y cerrar la conexión.
+    Maneja la conexión de un cliente:
+    - Recibe bytes hasta que la conexión se cierre.
+    - Decodifica los bytes a JSON y llama al callback de datos.
+    - Envía confirmación al cliente y cierra la conexión.
     """
     # Notificar nueva conexión
     callback_log(f"Log: [NUEVA CONEXIÓN] {direccion} conectado.")

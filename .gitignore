@@ -1,3 +1,6 @@
 __pycache__/
 deforestacion.db
 test_client.py
+*.csv
+*.xlsx
+*.xls
