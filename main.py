@@ -1,10 +1,14 @@
 from api.servidor import Servidor
 from gui.interfaz_usuario import InterfazGrafica
+from database.inicializar_db import crear_base_de_datos
 
 if __name__ == '__main__':
     # Instanciar la interfaz gráfica sin servidor aún
     app = InterfazGrafica(servidor=None)
 
+    # Inicializar la base de datos y crear tablas si no existen
+    crear_base_de_datos()
+    
     # Definir callback para loguear mensajes (conexiones, errores, info)
     # Usar la función print para mostrar en consola
     callback_log = print
