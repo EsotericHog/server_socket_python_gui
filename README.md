@@ -32,13 +32,7 @@ Sigue estos pasos para configurar y ejecutar el servidor en tu máquina local.
     cd <NOMBRE_CARPETA_PROYECTO>
     ```
 
-2.  **Inicializar la Base de Datos (Paso Único):**
-    Este comando crea el archivo `deforestacion.db` y la tabla necesaria. **Debe ejecutarse una sola vez** desde la carpeta raíz del proyecto.
-    ```bash
-    py -m database.inicializar_db
-    ```
-
-3.  **Ejecutar el Servidor:**
+2.  **Ejecutar el Servidor:**
     Para iniciar la aplicación, ejecuta el programa principal. Se abrirá la ventana de la interfaz gráfica.
     ```bash
     py main.py
