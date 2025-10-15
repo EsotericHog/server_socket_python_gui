@@ -1,3 +1,10 @@
+#Integrantes de servidor:Poleth Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
+#Fecha de creación:03/10/2025
+#Fecha de modificación:14/10/2025
+#Descripcion: GUI Tkinter para administrar el servidor: permite configurar host/puerto, iniciar/detener, 
+# mostrar los registros recibidos en una tabla (con detección y mapeo de formatos), y guardarlos en la 
+# base de datos. Incluye validaciones, 
+# limpieza de tabla, estado en la barra inferior y cierre seguro (callback con after).
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database import gestor_db

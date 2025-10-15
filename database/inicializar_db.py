@@ -1,3 +1,9 @@
+#Integrantes de servidor:Poleth Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
+#Fecha de creación:03/10/2025
+#Fecha de modificación:14/10/2025
+#Descripcion: Inicializa SQLite: crea/verifica la base y la tabla ({NOMBRE_TABLA}); maneja errores 
+# y cierra conexión; ejecutable directo.
+
 import sqlite3
 import os
 from config import NOMBRE_DB, NOMBRE_TABLA

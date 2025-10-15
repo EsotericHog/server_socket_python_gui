@@ -1,3 +1,9 @@
+#Integrantes de servidor:Poleth Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
+#Fecha de creación:03/10/2025
+#Fecha de modificación:14/10/2025
+#Descripcion:Inicia la app: crea la BD, define callbacks, crea el servidor, lo vincula a la GUI y
+#  abre la ventana.
+
 from api.servidor import Servidor
 from gui.interfaz_usuario import InterfazGrafica
 from database.inicializar_db import crear_base_de_datos

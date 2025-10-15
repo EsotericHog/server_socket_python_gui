@@ -1,3 +1,10 @@
+#Integrantes de servidor:Poleth Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
+#Fecha de creación:03/10/2025
+#Fecha de modificación:14/10/2025
+#Descripcion: DAO SQLite: resuelve ruta DB; inserta masivo (executemany) y obtiene todas las filas; 
+# maneja errores y cierra conexiones.
+
+
 import sqlite3
 import os
 from config import NOMBRE_DB, NOMBRE_TABLA

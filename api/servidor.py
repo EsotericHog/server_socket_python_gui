@@ -1,3 +1,11 @@
+#Integrantes de servidor:Poleth Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
+#Fecha de creación:03/10/2025
+#Fecha de modificación:14/10/2025
+#Descripcion: Servidor TCP multihilo que escucha en un host/puerto, acepta clientes y por conexión recibe 
+# un flujo de bytes hasta EOF, lo decodifica como JSON, registra eventos (callback_log), entrega los datos 
+# a la app (callback_datos) y envía un acuse de recibo. Incluye métodos para iniciar y detener limpiamente 
+# (SO_REUSEADDR + desbloqueo de accept()).
+
 import socket
 import threading
 import json
