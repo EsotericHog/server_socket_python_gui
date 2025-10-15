@@ -1,4 +1,4 @@
-#Integrantes de servidor:Poleth Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
+#Integrantes de servidor:Polett Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
 #Fecha de creación:03/10/2025
 #Fecha de modificación:14/10/2025
 #Descripcion:Inicia la app: crea la BD, define callbacks, crea el servidor, lo vincula a la GUI y
