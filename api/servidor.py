@@ -97,10 +97,13 @@ class Servidor:
             self.callback_log("Log: [DETENIDO] El servidor ha sido detenido.")
 
     def _escuchar_conexiones(self):
-        # Crear socket, configurar opciones y enlazar dirección
+        # Crear socket. Se define tipo de IP y Protocolo de Comunicación
         self.socket_servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Permite que tu servidor se reinicie inmediatamente y vuelva a usar el mismo puerto sin fallar.
         self.socket_servidor.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # Establecer dirección IP y Puerto
         self.socket_servidor.bind((self.host, self.puerto))
+        # Preparar socket para aceptar conexiones entrantes de clientes
         self.socket_servidor.listen()
 
         # Bucle principal para aceptar conexiones mientras esté corriendo
