@@ -1,4 +1,4 @@
-#Integrantes de servidor:Poleth Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
+#Integrantes de servidor:Polett Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
 #Fecha de creación:03/10/2025
 #Fecha de modificación:14/10/2025
 #Descripcion:Define la configuración base del sistema: el servidor TCP escucha en HOST:PUERTO 
