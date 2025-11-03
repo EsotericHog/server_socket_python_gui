@@ -11,7 +11,14 @@ PUERTO = 65432      # Puerto por defecto para escuchar conexiones
 TAMANO_BUFFER = 4096  # Definir el tamaño del buffer para recibir datos
 
 
-# Configuración de la base de datos
-# Definir nombre del archivo de la base de datos y la tabla a usar
-NOMBRE_DB = 'deforestacion.db'
+# Configuración de la base de datos MySQL
+# ATENCIÓN: Ajusta estos valores a tu servidor MySQL local
+MYSQL_CONFIG = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': '', # Coloca tu contraseña de root si tienes una
+    'database': 'deforestacion_db' # Nombre de la base de datos a usar/crear
+}
+
+# Nombre de la tabla a usar
 NOMBRE_TABLA = 'registros_deforestacion'

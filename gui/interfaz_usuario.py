@@ -1,14 +1,17 @@
 #Integrantes de servidor:Polett Casanga Rojas,Juan Castillo Lizama,Guilliano Punulaf,Kassandra Ramos
 #Fecha de creación:03/10/2025
-#Fecha de modificación:14/10/2025
-#Descripcion: GUI Tkinter para administrar el servidor: permite configurar host/puerto, iniciar/detener, 
-# mostrar los registros recibidos en una tabla (con detección y mapeo de formatos), y guardarlos en la 
-# base de datos. Incluye validaciones, 
-# limpieza de tabla, estado en la barra inferior y cierre seguro (callback con after).
+# Fecha de modificación: 02/11/2025 (Añadida exportación CSV/Excel)
+# Descripcion: GUI Tkinter para administrar el servidor: permite configurar host/puerto, iniciar/detener, 
+# mostrar los registros recibidos en una tabla, y guardarlos en la base de datos o exportarlos 
+# a CSV/Excel. Incluye validaciones, limpieza de tabla, 
+# estado en la barra inferior y cierre seguro (callback con after).
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog, Menu
 from database import gestor_db
 from config import HOST, PUERTO
+import pandas as pd
+import os
+from datetime import datetime
 
 
 class InterfazGrafica(tk.Tk):
@@ -80,9 +83,18 @@ class InterfazGrafica(tk.Tk):
         marco_acciones = ttk.Frame(self, padding="10")
         marco_acciones.pack(fill=tk.X)
         
-        # Botón para guardar datos en BD (inicialmente deshabilitado)
-        self.boton_guardar = ttk.Button(marco_acciones, text="Guardar Datos en BD", command=self.guardar_datos_recibidos, state="disabled")
-        self.boton_guardar.pack(side="left", padx=5)
+        # --- Botón de Guardado (Menú Desplegable) - CAMBIO ---
+        self.menu_guardar_btn = ttk.Menubutton(marco_acciones, text="Guardar Datos", state="disabled")
+        self.menu_principal = Menu(self.menu_guardar_btn, tearoff=0)
+        
+        self.menu_principal.add_command(label="Guardar en Base de Datos", command=self.guardar_datos_recibidos)
+        self.menu_principal.add_separator()
+        self.menu_principal.add_command(label="Exportar como CSV...", command=self.exportar_a_csv)
+        self.menu_principal.add_command(label="Exportar como Excel...", command=self.exportar_a_excel)
+        
+        self.menu_guardar_btn.config(menu=self.menu_principal)
+        self.menu_guardar_btn.pack(side="left", padx=5)
+
         # Botón para limpiar la tabla
         self.boton_limpiar = ttk.Button(marco_acciones, text="Limpiar Tabla", command=self.limpiar_tabla, state="disabled")
         self.boton_limpiar.pack(side="left", padx=5)
@@ -101,7 +113,7 @@ class InterfazGrafica(tk.Tk):
         # Limpiar datos temporales en memoria
         self.datos_recibidos_temporalmente = []
         # Deshabilitar botones de acción hasta que haya nuevos datos
-        self.boton_guardar.config(state="disabled")
+        self.menu_guardar_btn.config(state="disabled")
         self.boton_limpiar.config(state="disabled")
         print("Log: Tabla y datos temporales limpiados.")
 
@@ -182,7 +194,7 @@ class InterfazGrafica(tk.Tk):
         
         # Informar al usuario y habilitar botones de acción
         messagebox.showinfo("Datos Recibidos", f"Se han recibido {len(datos_mapeados)} registros y se muestran en la tabla. \nPresione 'Guardar Datos en BD' para almacenarlos.")
-        self.boton_guardar.config(state="normal")
+        self.menu_guardar_btn.config(state="normal")
         self.boton_limpiar.config(state="normal")
 
     def guardar_datos_recibidos(self):
@@ -227,3 +239,79 @@ class InterfazGrafica(tk.Tk):
         # Detener servidor antes de cerrar la aplicación
         self.servidor.detener()
         self.destroy()
+
+
+    def _preparar_dataframe(self):
+        """Helper para convertir los datos temporales en un DataFrame de Pandas."""
+        if not self.datos_recibidos_temporalmente:
+            messagebox.showwarning("Sin datos", "No hay datos en la tabla para exportar.")
+            return None
+        
+        # Convertir la lista de diccionarios a un DataFrame
+        df = pd.DataFrame(self.datos_recibidos_temporalmente)
+        
+        # Renombrar columnas para que coincidan con la GUI
+        df.rename(columns={
+            'pais': 'País',
+            'codigo': 'Código ISO3',
+            'año': 'Año',
+            'perdida_de_bosques_en_hectareas': 'Pérdida (Hectáreas)'
+        }, inplace=True)
+        
+        return df
+
+    def exportar_a_csv(self):
+        """Exportar los datos de la tabla a un archivo CSV."""
+        df = self._preparar_dataframe()
+        if df is None:
+            return
+
+        # Generar nombre de archivo por defecto
+        nombre_defecto = f"registros_deforestacion_{datetime.now().strftime('%Y-%m-%d')}.csv"
+
+        # Abrir diálogo "Guardar Como"
+        ruta_archivo = filedialog.asksaveasfilename(
+            initialfile=nombre_defecto,
+            defaultextension=".csv",
+            filetypes=[("Archivos CSV", "*.csv"), ("Todos los archivos", "*.*")],
+            title="Guardar como CSV"
+        )
+
+        if not ruta_archivo:
+            # Usuario canceló
+            return
+        
+        try:
+            # Guardar en CSV con codificación UTF-8 (importante para acentos)
+            df.to_csv(ruta_archivo, index=False, encoding='utf-8-sig')
+            messagebox.showinfo("Éxito", f"Datos exportados exitosamente a:\n{os.path.basename(ruta_archivo)}")
+        except Exception as e:
+            messagebox.showerror("Error de Exportación", f"No se pudo guardar el archivo:\n{e}")
+
+    def exportar_a_excel(self):
+        """Exportar los datos de la tabla a un archivo Excel."""
+        df = self._preparar_dataframe()
+        if df is None:
+            return
+
+        # Generar nombre de archivo por defecto
+        nombre_defecto = f"registros_deforestacion_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
+
+        # Abrir diálogo "Guardar Como"
+        ruta_archivo = filedialog.asksaveasfilename(
+            initialfile=nombre_defecto, # <- CAMBIO
+            defaultextension=".xlsx",
+            filetypes=[("Archivos Excel", "*.xlsx"), ("Todos los archivos", "*.*")],
+            title="Guardar como Excel"
+        )
+
+        if not ruta_archivo:
+            # Usuario canceló
+            return
+            
+        try:
+            # Guardar en Excel
+            df.to_excel(ruta_archivo, index=False, sheet_name='Datos Deforestación')
+            messagebox.showinfo("Éxito", f"Datos exportados exitosamente a:\n{os.path.basename(ruta_archivo)}")
+        except Exception as e:
+            messagebox.showerror("Error de Exportación", f"No se pudo guardar el archivo:\n{e}")
