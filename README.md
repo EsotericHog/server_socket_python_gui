@@ -4,7 +4,7 @@
 
 Proyecto universitario que implementa la parte del **servidor** de una aplicación cliente-servidor. Está desarrollado en Python y es capaz de recibir datasets sobre la deforestación global.
 
-La aplicación utiliza sockets para la comunicación, una base de datos SQLite para la persistencia de datos y una interfaz gráfica de usuario (GUI) construida con Tkinter para la gestión y visualización.
+La aplicación utiliza sockets para la comunicación, una base de datos MySQL para la persistencia de datos y una interfaz gráfica de usuario (GUI) construida con Tkinter para la gestión y visualización.
 
 ### Entorno de Operación
 Actualmente, el proyecto está diseñado para operar de forma local, es decir, el cliente y el servidor deben ejecutarse en la misma computadora.
@@ -14,7 +14,7 @@ Actualmente, el proyecto está diseñado para operar de forma local, es decir, e
 1.  El servidor se inicia desde la GUI y queda a la espera de conexiones.
 2.  Un cliente se conecta y envía un *payload* en formato JSON.
 3.  El servidor recibe los datos y los muestra en una tabla dentro de la GUI para su revisión.
-4.  El usuario puede visualizar los datos y, mediante un botón, guardarlos permanentemente en la base de datos local.
+4.  El usuario puede visualizar los datos y, mediante un menú desplegable, guardarlos permanentemente en la base de datos MySQL o exportarlos localmente como un archivo CSV o Excel.
 
 ## Instrucciones de Puesta en Marcha
 
@@ -23,6 +23,7 @@ Sigue estos pasos para configurar y ejecutar el servidor en tu máquina local.
 ### Prerrequisitos
 
 -   Tener instalado [Python 3](https://www.python.org/downloads/).
+-   Tener acceso a un servidor MySQL (local o remoto).
 
 ### Pasos de Instalación
 
@@ -32,12 +33,41 @@ Sigue estos pasos para configurar y ejecutar el servidor en tu máquina local.
     cd <NOMBRE_CARPETA_PROYECTO>
     ```
 
-2.  **Ejecutar el Servidor:**
-    Para iniciar la aplicación, ejecuta el programa principal. Se abrirá la ventana de la interfaz gráfica.
+2.  **(Recomendado) Crear un Entorno Virtual:**
+    Es una buena práctica crear un entorno virtual para aislar las dependencias de este proyecto.
+
     ```bash
-    py main.py
+    # Crear el entorno virtual (llámalo 'venv' o como prefieras)
+    python -m venv venv
     ```
-    Una vez abierta la ventana, ingresa el `Host` y `Puerto` deseados y presiona **"Iniciar Servidor"**.
+    
+    **Activa el entorno virtual:**
+    -   En **Windows** (cmd):
+        ```bash
+        .\venv\Scripts\activate
+        ```
+    -   En **macOS/Linux** (bash):
+        ```bash
+        source venv/bin/activate
+        ```
+    *Notarás que tu terminal ahora muestra `(venv)` al inicio de la línea.*
+
+3.  **Instalar las Dependencias:**
+    Con tu entorno virtual activado, instala todas las bibliotecas necesarias desde el archivo `requirements.txt`:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Configurar la Base de Datos:**
+    Abre el archivo `config.py` y edita el diccionario `MYSQL_CONFIG` con las credenciales de tu servidor MySQL. El script creará la base de datos (`database`) si no existe.
+    ```python
+    MYSQL_CONFIG = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': 'tu_contraseña_aqui',
+        'database': 'deforestacion_db'
+    }
+    ```
 
 ## Protocolo de Comunicación (Guía para el Equipo Cliente)
 Esta sección detalla todo lo necesario para que el software cliente pueda comunicarse exitosamente con este servidor.
